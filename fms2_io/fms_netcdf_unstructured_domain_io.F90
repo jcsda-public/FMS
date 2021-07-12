@@ -16,8 +16,15 @@
 !* You should have received a copy of the GNU Lesser General Public
 !* License along with FMS.  If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
+!> @defgroup fms_netcdf_unstructured_domain_io_mod fms_netcdf_unstructured_domain_io_mod
+!> @ingroup fms2_io
+!> @brief Handles netcdf I/O for unstructured domains
+!!
+!> Mainly routines for use via interfaces in @ref fms2_io_mod
 
 !> @file
+!> @brief File for @ref fms_netcdf_unstructured_domain_io_mod
+
 module fms_netcdf_unstructured_domain_io_mod
 use,intrinsic :: iso_fortran_env
 use netcdf
@@ -27,14 +34,15 @@ use netcdf_io_mod
 implicit none
 private
 
-
 !> @brief netcdf unstructured domain file type.
-type, extends(FmsNetcdfFile_t), public :: FmsNetcdfUnstructuredDomainFile_t
+!> @ingroup fms_netcdf_unstructured_domain_io_mod
+type, public, extends(FmsNetcdfFile_t) :: FmsNetcdfUnstructuredDomainFile_t
   type(domainug) :: domain !< Unstructured domain.
   character(len=256) :: non_mangled_path !< Non-domain-mangled path.
 endtype FmsNetcdfUnstructuredDomainFile_t
 
-
+!> @addtogroup fms_netcdf_unstructured_domain_io_mod
+!> @{
 public :: open_unstructured_domain_file
 public :: close_unstructured_domain_file
 public :: register_unstructured_dimension
@@ -62,11 +70,10 @@ public :: unstructured_write_restart
 
 contains
 
-
 !> @brief Open a netcdf file that is associated with an unstructured domain.
 !! @return Flag telling if the open completed successfully.
 function open_unstructured_domain_file(fileobj, path, mode, domain, nc_format, &
-                                       is_restart) &
+                                       is_restart, dont_add_res_to_filename) &
   result(success)
 
   type(FmsNetcdfUnstructuredDomainFile_t), intent(inout) :: fileobj !< File object.
@@ -84,6 +91,8 @@ function open_unstructured_domain_file(fileobj, path, mode, domain, nc_format, &
   logical, intent(in), optional :: is_restart !< Flag telling if this file
                                               !! is a restart file.  Defaults
                                               !! to false.
+  logical, intent(in), optional :: dont_add_res_to_filename !< Flag indicating not to add
+                                              !! ".res" to the filename
   logical :: success
 
   type(domainug), pointer :: io_domain
@@ -112,7 +121,7 @@ function open_unstructured_domain_file(fileobj, path, mode, domain, nc_format, &
   success = .false.
   if (string_compare(mode, "read", .true.) .or. string_compare(mode, "append", .true.)) then
     !Only for reading: attempt to open non-distributed files.
-    success = netcdf_file_open(fileobj, buf, mode, nc_format, pelist, is_restart)
+    success = netcdf_file_open(fileobj, buf, mode, nc_format, pelist, is_restart, dont_add_res_to_filename)
   endif
   if (.not. success) then
     !Add the domain tile id to the file name (if necessary).
@@ -123,7 +132,7 @@ function open_unstructured_domain_file(fileobj, path, mode, domain, nc_format, &
     endif
 
     !Open distributed files.
-    success = netcdf_file_open(fileobj, buf, mode, nc_format, pelist, is_restart)
+    success = netcdf_file_open(fileobj, buf, mode, nc_format, pelist, is_restart, dont_add_res_to_filename)
   endif
   deallocate(pelist)
 

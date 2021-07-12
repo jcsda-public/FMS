@@ -24,6 +24,7 @@ use mpi
 use mpp_mod
 use mpp_domains_mod
 use fms2_io_mod
+use platform_mod
 implicit none
 
 character(len=8), parameter :: green = achar(27)//"[1;32m"
@@ -144,6 +145,7 @@ do i = 1,ntiles
 enddo
 ocn_layout = (/1, npes/)
 
+call fms2_io_init()
 !Run tests.
 if (tests(atmos)) then
   if (mod(npes,ntiles) .ne. 0) then
@@ -207,8 +209,8 @@ end subroutine mpi_check
 
 subroutine chksum_match(out_chksum, in_chksum, var_name, debug)
 
-  integer(kind=int64), intent(in) :: out_chksum
-  integer(kind=int64), intent(in) :: in_chksum
+  integer(kind=i8_kind), intent(in) :: out_chksum
+  integer(kind=i8_kind), intent(in) :: in_chksum
   character(len=*), intent(in) :: var_name
   logical, intent(in) :: debug
 
@@ -232,6 +234,5 @@ subroutine chksum_match(out_chksum, in_chksum, var_name, debug)
                    //" data that was written out.")
   endif
 end subroutine chksum_match
-
 
 end program main
