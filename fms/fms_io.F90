@@ -137,7 +137,7 @@ integer, parameter, private :: max_split_file = 50
 integer, parameter, private :: max_fields=400
 integer, parameter, private :: max_axes=40
 integer, parameter, private :: max_atts=20
-integer, parameter, private :: max_domains = 10
+integer, parameter, private :: max_domains = 1000
 integer, parameter, private :: MAX_TIME_LEVEL_REGISTER = 2
 integer, parameter, private :: MAX_TIME_LEVEL_WRITE = 20
 integer, parameter          :: max_axis_size=10000
@@ -721,8 +721,9 @@ subroutine fms_io_init()
   end select
 
 ! Initially allocate  files_write and files_read
-  allocate(files_write(max_files_w),files_read(max_files_r))
-  allocate(registered_file(max_files_w))
+  if (.not. allocated(files_write) ) allocate(files_write(max_files_w))
+  if (.not. allocated(files_read) ) allocate(files_read(max_files_r))
+  if (.not. allocated(registered_file)) allocate(registered_file(max_files_w))
 
   do i = 1, max_domains
      array_domain(i) = NULL_DOMAIN2D
