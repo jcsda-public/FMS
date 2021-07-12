@@ -41,16 +41,21 @@ list( APPEND fms_src_files
   affinity/affinity.c
   affinity/fms_affinity.F90
   amip_interp/amip_interp.F90
+  amip_interp/amip_interp.rey_oi.txt
   astronomy/astronomy.F90
+  astronomy/astronomy.tech.ps
   axis_utils/axis_utils2.F90
   axis_utils/axis_utils.F90
   block_control/block_control.F90
   column_diagnostics/column_diagnostics.F90
   constants/constants.F90
+  constants/fmsconstants.F90
   coupler/atmos_ocean_fluxes.F90
   coupler/coupler_types.F90
   coupler/ensemble_manager.F90
   data_override/data_override.F90
+  data_override/get_grid_version_fms2io.F90
+  data_override/get_grid_version_mpp.F90
   diag_integral/diag_integral.F90
   diag_manager/diag_axis.F90
   diag_manager/diag_data.F90
@@ -60,6 +65,7 @@ list( APPEND fms_src_files
   diag_manager/diag_table.F90
   diag_manager/diag_util.F90
   drifters/cloud_interpolator.F90
+  drifters/drifters_combine
   drifters/drifters_comm.F90
   drifters/drifters_compute_k.h
   drifters/drifters_core.F90
@@ -80,26 +86,6 @@ list( APPEND fms_src_files
   fms2_io/fms_io_utils.F90
   fms2_io/fms_netcdf_domain_io.F90
   fms2_io/fms_netcdf_unstructured_domain_io.F90
-  fms2_io/include/array_utils_char.inc
-  fms2_io/include/array_utils.inc
-  fms2_io/include/compressed_read.inc
-  fms2_io/include/compressed_write.inc
-  fms2_io/include/compute_global_checksum.inc
-  fms2_io/include/domain_read.inc
-  fms2_io/include/domain_write.inc
-  fms2_io/include/get_checksum.inc
-  fms2_io/include/get_data_type_string.inc
-  fms2_io/include/get_global_attribute.inc
-  fms2_io/include/get_variable_attribute.inc
-  fms2_io/include/netcdf_add_restart_variable.inc
-  fms2_io/include/netcdf_read_data.inc
-  fms2_io/include/netcdf_write_data.inc
-  fms2_io/include/register_domain_restart_variable.inc
-  fms2_io/include/register_global_attribute.inc
-  fms2_io/include/register_unstructured_domain_restart_variable.inc
-  fms2_io/include/register_variable_attribute.inc
-  fms2_io/include/unstructured_domain_read.inc
-  fms2_io/include/unstructured_domain_write.inc
   fms2_io/netcdf_io.F90
   fms/fms.F90
   fms/fms_io.F90
@@ -128,7 +114,9 @@ list( APPEND fms_src_files
   interpolator/interpolator.F90
   memutils/memutils.F90
   monin_obukhov/monin_obukhov.F90
-  monin_obukhov/monin_obukhov_kernel.F90
+  monin_obukhov/monin_obukhov_inter.F90
+  mosaic2/grid2.F90
+  mosaic2/mosaic2.F90
   mosaic/constant.h
   mosaic/create_xgrid.c
   mosaic/create_xgrid.h
@@ -138,7 +126,6 @@ list( APPEND fms_src_files
   mosaic/grid.F90
   mosaic/interp.c
   mosaic/interp.h
-  mosaic/mosaic2.F90
   mosaic/mosaic.F90
   mosaic/mosaic_util.c
   mosaic/mosaic_util.h
@@ -148,17 +135,14 @@ list( APPEND fms_src_files
   mpp/include/group_update_unpack.inc
   mpp/include/mpp_alltoall_mpi.h
   mpp/include/mpp_alltoall_nocomm.h
-  mpp/include/mpp_alltoall_sma.h
   mpp/include/mpp_chksum.h
   mpp/include/mpp_chksum_int.h
   mpp/include/mpp_chksum_scalar.h
   mpp/include/mpp_comm.inc
   mpp/include/mpp_comm_mpi.inc
   mpp/include/mpp_comm_nocomm.inc
-  mpp/include/mpp_comm_sma.inc
   mpp/include/mpp_data_mpi.inc
   mpp/include/mpp_data_nocomm.inc
-  mpp/include/mpp_data_sma.inc
   mpp/include/mpp_define_nest_domains.inc
   mpp/include/mpp_do_check.h
   mpp/include/mpp_do_checkV.h
@@ -207,7 +191,6 @@ list( APPEND fms_src_files
   mpp/include/mpp_read_distributed_ascii.inc
   mpp/include/mpp_reduce_mpi.h
   mpp/include/mpp_reduce_nocomm.h
-  mpp/include/mpp_reduce_sma.h
   mpp/include/mpp_scatter.h
   mpp/include/mpp_sum_ad.inc
   mpp/include/mpp_sum.inc
@@ -215,14 +198,11 @@ list( APPEND fms_src_files
   mpp/include/mpp_sum_mpi.h
   mpp/include/mpp_sum_nocomm_ad.h
   mpp/include/mpp_sum_nocomm.h
-  mpp/include/mpp_sum_sma.h
   mpp/include/mpp_transmit.inc
   mpp/include/mpp_transmit_mpi.h
   mpp/include/mpp_transmit_nocomm.h
-  mpp/include/mpp_transmit_sma.h
   mpp/include/mpp_type_mpi.h
   mpp/include/mpp_type_nocomm.h
-  mpp/include/mpp_type_sma.h
   mpp/include/mpp_unstruct_domain.inc
   mpp/include/mpp_unstruct_pass_data.h
   mpp/include/mpp_update_domains2D_ad.h
@@ -232,7 +212,6 @@ list( APPEND fms_src_files
   mpp/include/mpp_util.inc
   mpp/include/mpp_util_mpi.inc
   mpp/include/mpp_util_nocomm.inc
-  mpp/include/mpp_util_sma.inc
   mpp/include/mpp_write_2Ddecomp.h
   mpp/include/mpp_write_compressed.h
   mpp/include/mpp_write.h
@@ -248,10 +227,8 @@ list( APPEND fms_src_files
   mpp/mpp_parameter.F90
   mpp/mpp_pset.F90
   mpp/mpp_utilities.F90
-  mpp/nsclock.c
-  mpp/threadloc.c
   platform/platform.F90
-  random_numbers/MersenneTwister.F90
+  random_numbers/mersennetwister.F90
   random_numbers/random_numbers.F90
   sat_vapor_pres/sat_vapor_pres.F90
   sat_vapor_pres/sat_vapor_pres_k.F90
