@@ -7906,11 +7906,12 @@ function open_file(file, form, action, access, threading, recl, dist) result(uni
 
 
   !#############################################################################
-  subroutine get_mosaic_tile_grid(grid_file, mosaic_file, domain, tile_count)
+  subroutine get_mosaic_tile_grid(grid_file, mosaic_file, domain, tile_count, custom_path)
     character(len=*), intent(out)          :: grid_file
     character(len=*), intent(in)           :: mosaic_file
     type(domain2D),   intent(in)           :: domain
     integer,          intent(in), optional :: tile_count
+    character(len=*), intent(in), optional :: custom_path
     integer                                :: tile, ntileMe
     integer, dimension(:), allocatable     :: tile_id
 
@@ -7920,7 +7921,11 @@ function open_file(file, form, action, access, threading, recl, dist) result(uni
     allocate(tile_id(ntileMe))
     tile_id = mpp_get_tile_id(domain)
     call read_data(mosaic_file, "gridfiles", grid_file, level=tile_id(tile) )
-    grid_file = 'INPUT/'//trim(grid_file)
+    if (.not. present(custom_path)) then
+      grid_file = 'INPUT/'//trim(grid_file)
+    else
+      grid_file = trim(custom_path)//'/'//trim(grid_file)
+    endif
     deallocate(tile_id)
 
   end subroutine get_mosaic_tile_grid
